@@ -54,43 +54,37 @@ Please provide only the necessary details as mentioned above. Do not include any
 
 st.title("Company Details Extractor")
 
-pdf_file = st.file_uploader("Choose a pdf file...", type="pdf")
-uploaded_file = st.file_uploader("Choose an image...", type=["jpg", "jpeg", "png"])
+pdf_files = st.file_uploader("Choose multiple pdf files...", type="pdf", accept_multiple_files=True)
 
-responses = []    
-if uploaded_file is not None:
-    image = Image.open(uploaded_file)
-    input_text = custom_inst   
-    img_response = get_gemini_response(input_text, image)
-    responses.extend(extract_company_details(img_response))
-else:
-    img_response = ""
+responses = []
 
-if pdf_file is not None:
-    pdf_to_images(pdf_file, output_path)
-    # Process images in the 'images' folder
-    image_folder = "images"
+if pdf_files:
+    for pdf_file in pdf_files:
+        pdf_to_images(pdf_file, output_path)
+        # Process images in the 'images' folder
+        image_folder = "images"
 
-    if os.path.exists(image_folder):
-        st.write("Processing images in the 'images' folder:")
-        for filename in os.listdir(image_folder):
-            if filename.lower().endswith(('.jpg', '.jpeg', '.png')):
-                st.write(f"Processing image: {filename}")
-                image_path = os.path.join(image_folder, filename)
-                image = Image.open(image_path)
-                input_text = custom_inst  # Set your input text here
-                img_response = get_gemini_response(input_text, image)
-                responses.extend(extract_company_details(img_response))
+        if os.path.exists(image_folder):
+            st.write(f"Processing images from PDF: {pdf_file.name}")
+            for filename in os.listdir(image_folder):
+                if filename.lower().endswith(('.jpg', '.jpeg', '.png')):
+                    st.write(f"Processing image: {filename}")
+                    image_path = os.path.join(image_folder, filename)
+                    image = Image.open(image_path)
+                    input_text = custom_inst  # Set your input text here
+                    img_response = get_gemini_response(input_text, image)
+                    responses.extend(extract_company_details(img_response))
 
-        # Write all responses to a CSV file
-        if responses:
-            df = pd.DataFrame(responses, columns=["Company name", "Email address", "Phone Number", "Website"])
-            st.write(df)
+    # Write all responses to a CSV file
+    if responses:
+        df = pd.DataFrame(responses, columns=["Company name", "Email address", "Phone Number", "Website"])
+        st.write(df)
 
-            # Save dataframe to CSV file
-            csv_file_path = "gemini_responses.csv"
-            df.to_csv(csv_file_path, index=False)
-            st.write(f"Responses saved to CSV file: {csv_file_path}")
-        else:
-            st.write("No responses found to save.")
-        delete_images(output_path)
+        # Save dataframe to CSV file
+        csv_file_path = "gemini_responses.csv"
+        df.to_csv(csv_file_path, index=False)
+        st.write(f"Responses saved to CSV file: {csv_file_path}")
+    else:
+        st.write("No responses found to save.")
+
+    delete_images(output_path)
