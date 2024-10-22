@@ -17,6 +17,9 @@ output_file = "gemini_responses.csv"
 
 def pdf_to_images(pdf_file, output_path):
     try:
+        if not os.path.exists(output_path):
+            os.makedirs(output_path)
+            
         images = convert_from_bytes(pdf_file.read()) 
         
         for i, image in enumerate(images, start=1):
