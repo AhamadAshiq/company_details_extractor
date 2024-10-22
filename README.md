@@ -12,9 +12,13 @@ https://github.com/oschwartz10612/poppler-windows/releases
 Add it in env variables
 Steps:
 Go to Control Panel > System and Security> System
+
 Click on Advanced system settings
+
 Click on Environment Variables
+
 Under System Variables, scroll down and find the Path variable, click Edit.
+
 Click New and enter the path to the Poppler binaries (e.g., C:\Program Files\)
 
 **Install the required dependencies :**
