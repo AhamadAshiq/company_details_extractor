@@ -5,6 +5,7 @@ This is a Streamlit web application that extracts company details including comp
 git clone https://github.com/AhamadAshiq/company_details_extractor.git
 
 **Set .env file**
+Get Api key (https://aistudio.google.com/app/apikey)
 
 **Install Poppler**
 https://github.com/oschwartz10612/poppler-windows/releases
